@@ -4,8 +4,8 @@ require_once "cons.php";
 
 // define variable
 
-$username = $password = $confirm_password = "";
-$username_err = $password_err = $confirm_password_err = "";
+$username = $password = $confirm_password = $question = $reponse = $nom = $prenom = "";
+$username_err = $password_err = $confirm_password_err = $question_err = $reponse_err = $nom_err = $prenom_err = "";
 
 if($_SERVER["REQUEST_METHOD"] == "POST")
 {
@@ -13,8 +13,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
 //username 
 if(empty(trim($_POST["username"]))){//si vide alors
     $username_err = "SVP entrer un username";
-}elseif(!preg_match('/^[a-zA-Z0-9_]+$/', trim($_POST["username"]))){//si existe mais mal entré
-    $username_err = "le username peut contenir des chiffres des lettres ou des underscores";
+}elseif(!preg_match('/^[a-zA-Z0-9_]+$/', trim($_POST["username"]))){//si le username existe mais mal entré
+    $username_err = "le username peut contenir des chiffres, des lettres ou des underscores";
 }else{
 //preparer requete
 $sql = "SELECT id FROM users WHERE username = ?";
@@ -23,7 +23,7 @@ if($stmt = $mysqli->prepare($sql)){
     $stmt->bind_param("s", $param_username);
 $param_username = trim($_POST["username"]);
 
-if($stmt->execute()){
+if($stmt->execute()){ 
 	
 	$stmt->store_result();
 	
@@ -62,20 +62,60 @@ if(empty(trim($_POST["confirm_password"]))){
     }
 }
 
-if(empty($username_err) && empty($password_err) && empty($confirm_password_err))
+//Question secrete
+if(empty(trim($_POST["question"]))){
+    $question = "Ecrivez votre question secrete";
+}else{
+    $question=($_POST["question"]);
+}
+
+//reponse a la question secrete
+
+if(empty(trim($_POST["reponse"]))){
+    $reponse = "Saisissez la reponse a la question secrete";
+}else{
+    $reponse=($_POST["reponse"]);
+}
+
+//nom de l´utilisateur
+
+if(empty(trim($_POST["nom"]))){
+    $nom_err = "Saisissez votre nom";
+}else{
+    $nom=($_POST["nom"]);
+}
+
+
+//prenom de l´utilisateur
+
+if(empty(trim($_POST["prenom"]))){
+    $prenom_err = "Saisissez votre prenom";
+}else{
+    $prenom=($_POST["prenom"]);
+}
+
+
+
+if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($question_err) && empty($reponse_err) && empty($nom_err) && empty ($prenom_err))
+
 {
 
     //prepare ma requete d'insertion
-    $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+    $sql = "INSERT INTO users (username, password, question, reponse, nom, prenom) 
+            VALUES (?, ?, ?, ?, ?, ?)";
     
     if($stmt = $mysqli->prepare($sql)){
 	    
-        $stmt->bind_param("ss", $param_username, $param_password);
+        $stmt->bind_param("ssssss", $param_username, $param_password, $param_question, $param_reponse, $param_nom, $param_prenom);
 
         $param_username = $username;
         $param_password = password_hash($password, PASSWORD_DEFAULT);
+        $param_question=$question;
+        $param_reponse=$reponse;
+        $param_nom=$nom;
+        $param_prenom=$prenom;
         
-        var_dump($stmt->execute());
+        //var_dump($stmt->execute());
 
         if($stmt->execute()){
             //redirection
@@ -88,7 +128,6 @@ if(empty($username_err) && empty($password_err) && empty($confirm_password_err))
 
     }
 }
-
 $mysqli->close();
 
 }
@@ -103,7 +142,7 @@ $mysqli->close();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/inscription.css" type="text/css" >
+    <link rel="stylesheet" href="assets/css/inscription.css" type="text/css" >
     <title>Document</title>
 </head>
 <body>
@@ -120,42 +159,44 @@ $mysqli->close();
 
             <div class="essaie1">
                 <label for="nom">Nom:</label><br><br>
-                <input type="text" name="nom" id="nom" placeholder="Votre nom" required><br><br>
-                
+                <input type="text" name="nom" id="nom" placeholder="Votre nom"><br><br>
+                <span><?php echo  $nom_err; ?></span>
             </div>
 
             <div class="essaie2">
                 <label for="prenom">Prenom:</label><br><br>
-                <input type="text" name="prenom" id="prenom" placeholder="Votre prenom" required><br><br>
-                
+                <input type="text" name="prenom" id="prenom" placeholder="Votre prenom"><br><br>
+                <span><?php echo  $prenom_err; ?></span>
             </div>
             
             <div class="essaie3">
-                <label for="nom">Pseudo:</label><br><br>
-                <input type="text" name="username" id="username" placeholder="Votre nom" required><br><br>
+                <label for="prenom">Pseudo:</label><br><br>
+                <input type="text" name="username" id="username" placeholder="Votre pseudo" required><br><br>
                 <span><?php echo  $username_err; ?></span>
-            </div>
 
             <div class="essaie4">
-                <label for="mot de passe">Mot de passe:</label><br><br>
-                <input type="password" name="password" id="password" placeholder="Votre password" required><br><br>
+                <label for="password">Mot de passe:</label><br><br>
+                <input type="password" name="password" id="password" placeholder="Votre mot de passe" required><br><br>
                 <span><?php echo  $password_err; ?></span>
             </div>
 
             <div class="essaie5">
-                <label for="mot de passe">Repeter Mot de passe:</label><br><br>
-                <input type="password" name="confirm_password" id="confirm_password" placeholder="Votre password" required><br><br>
+                <label for="confirm_password">Repeter Mot de passe:</label><br><br>
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirmez le mot de passe" required><br><br>
                 <span><?php echo  $confirm_password_err; ?></span>
             </div>
 
+            
             <div class="essaie6">
-                <label for="Question secrete">Question secrete:</label><br><br>
-                <input type="text" id="Question_secrete" placeholder="Question secrete" required><br><br>
+            <label for="question">Question secrete:</label><br><br>
+                <input type="text" name="question" id="question" placeholder="Question secrete"><br><br>
+                <span><?php echo  $question_err; ?></span>
             </div>
 
             <div class="essaie7">
-                <label for="Reponse a la question secrete">Reponse question secrete:</label><br><br>
-                <input type="text" id="Reponse_Question_secrete" placeholder="Question secrete" required><br><br>
+                <label for="reponse">Reponse question secrete:</label><br><br>
+                <input type="text" name="reponse" id="reponse" placeholder="Reponse a la question secrete"><br><br>
+                <span><?php echo  $reponse_err; ?></span>
             </div>
 
             <div class="essaie8">
@@ -164,7 +205,7 @@ $mysqli->close();
              </div>
         
             <div class="essaie9">
-                <input type="submit" value="Valider" >
+                <input id="button" type="submit" value="Valider">
              </div>
             
         </div>
