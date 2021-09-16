@@ -7,8 +7,10 @@ require_once "cons.php";
 $username = $password = $confirm_password = "";
 $username_err = $password_err = $confirm_password_err = "";
 
+
 if($_SERVER["REQUEST_METHOD"] == "POST")
 {
+
 
 //username 
 if(empty(trim($_POST["username"]))){//si vide alors
@@ -62,6 +64,8 @@ if(empty(trim($_POST["confirm_password"]))){
     }
 }
 
+
+
 if(empty($username_err) && empty($password_err) && empty($confirm_password_err))
 {
 
@@ -78,6 +82,8 @@ if(empty($username_err) && empty($password_err) && empty($confirm_password_err))
         var_dump($stmt->execute());
 
         if($stmt->execute()){
+
+die;
             //redirection
             header("location: connexion.php");
         } else{
@@ -104,16 +110,16 @@ $mysqli->close();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/inscription.css" type="text/css" >
+    <link rel="stylesheet" href="assets/css/inscription.css">
     <title>Document</title>
 </head>
 <body>
     <header>
         <img src="assets/images/GBAF.JPG" alt="logo de GBAF">
-        <p>Le Groupement Banque Assurance Francais (GBAF)</p> 
+        <p>iLe Groupement Banque Assurance Francais (GBAF)</p> 
     </header>
     <h2>Inscription</h2><br><br>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
         <div class="container">
             
             <div class="essaie1">

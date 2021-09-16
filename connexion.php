@@ -74,6 +74,28 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
 
 ?>
 
+
+
+<?php
+
+
+
+    if(isset($_POST['password'], $_POST['pseudo'])){
+        $stmt=$dbb->prepare('SELECT password from users WHERE pseudo = ?');
+        $stmt->execute([$_POST['pseudo']]);
+        $hashedpassword=$stmt->fetchColumn();
+
+        if(password_verify($_POST['password'], $hashedpassword)){
+            echo 'Connexion reussie';
+        }
+        else{
+            echo 'Mot de passe incorrect';
+        }
+    }
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,7 +132,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
                 <input type="submit" value="Connexion" id="button">
              </div>
          </div>
-         Vous n'avez pas de compte? <a href="inscription"> Inscrivez vous ici</a>
+         Vous n'avez pas de compte? <a href="inscription"> Inscrivez vous ici</a><br><br>
+         Mot de passe oublié? Créer un nouveau <a href="recuperation_mdp.php">Ici</a><br>
+
          </form>
          
 </body>

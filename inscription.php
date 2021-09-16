@@ -154,9 +154,8 @@ $mysqli->close();
     </header>
     <h2>Inscription</h2><br><br>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+
         <div class="container">
-
-
             <div class="essaie1">
                 <label for="nom">Nom:</label><br><br>
                 <input type="text" name="nom" id="nom" placeholder="Votre nom"><br><br>
@@ -206,7 +205,7 @@ $mysqli->close();
         
             <div class="essaie9">
                 <input id="button" type="submit" value="Valider">
-             </div>
+            </div>
             
         </div>
             

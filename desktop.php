@@ -6,9 +6,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit; 
   }
 
-  //function qui va recuperer ta table acteur 
+  //function qui va recuperer ta table acteur
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,14 +20,16 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 </head>
 <body>
     <header>
-        <img id="img1" src="assets/images/GBAF.jpg" alt="logo de GBAF">
+        <img id="img1" src="assets/images/GBAF.JPG" alt="logo de GBAF">
 
         <nav class="navigation">
             
             <ul>
+                <li><a href=""><img src="assets/images/param.png" alt="logo de parametre"></a></li>
                 <li> Bienvenue <?php echo htmlspecialchars($_SESSION["nom"]);?></li>
                 <li> <a href="deconnexion.php">Deconnexion</a></li>
             </ul>
+            ssssssssssssssssss
         </nav>
     </header> <hr>
 
@@ -54,58 +55,59 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <article>
 	         <span>LES ACTEURS ET PARTENAIRES</span>
              <!--foreach avec ta table acteur-->
-	    <section class="section1">
-                <div>
-                    <img id="img2" src="assets/images/formation_co.png" alt="logo de l´entreprise formation_co">
-                </div>
-			       <p>Formation&co est une association française présente sur tout le territoire.
-                    Nous proposons à des personnes issues de tout milieu de devenir entrepreneur grâce à un
-                     crédit et un accompagnement professionnel et personnalisé.....</p><br>
-                    <p>
-                        <button> <a href="acteur1.php" target=_blank>Lire la suite </a></button>
-                    </p>
-                    
-                </div>
+<?php
+// Connexion à la base de données
+$servername = "localhost";
+$username = "root";
+$password = "";
 
-		</section>
-           <!--foreach end  avec ta table acteur-->
+try {
+  $bdd = new PDO("mysql:host=$servername;dbname=projet3", $username, $password);
+  // set the PDO error mode to exception
+  $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-		<section class="section1">
-			   <div>
-                    <img id="img3" src="assets/images/protectpeople.png" alt="logo de l´entreprise protectpeople">
-			   </div>
-               <p>Protectpeople finance la solidarité nationale.
-                    Nous appliquons le principe édifié par la Sécurité sociale française en 1945 : 
-                    permettre à chacun de bénéficier d’une protection sociale....</p>
+} catch(PDOException $e) {
+  echo "Connection failed: " . $e->getMessage();
+}
 
-                <p>
-                    <button> <a href="acteur2.php" target=_blank>Lire la suite </a></button>
-                </p>
-		</section>
+// Récupération des 10 derniers messages
+$reponse = $bdd->query('SELECT * FROM acteur');
 
-        <section class="section1">
-			   <div>
-                    <img id="img4" src="assets/images/CDE.png" alt="logo de l´entreprise CDE">
-			   </div>
-               <p>La CDE (Chambre Des Entrepreneurs)... </p>
-               <p>
-               <button> <a href="acteur3.php" target=_blank>Lire la suite </a></button>
-               </p>
-		</section>
+// Affichage de chaque message (toutes les données sont protégées par htmlspecialchars)
+while ($donnees = $reponse->fetch())
+{
 
-        <section class="section1">
-			   <div>
-                       <img id="img5" src="assets/images/Dsa_france.png" alt="logo de l´entreprise Dsa_france">
-			   </div>
-               <p>Dsa France accélère la croissance du territoire et s’engage avec les collectivités territoriales.
-                    Nous accompagnons les entreprises dans les étapes clés de leur évolution....</p>
-                <p>
-                    <button> <a href="acteur4.php" target=_blank>Lire la suite </a></button>
-                </p>
-		</section>
-	   </article>
+$select = $bdd->query('SELECT vote FROM  vote where vote = 1 and id_acteur='.$donnees['id_acteur'].' and id_user='.$_SESSION['id']);
+$like = $select->rowCount();
 
-    </main><hr>
+$select = $bdd->query('SELECT vote FROM  vote where vote = 0 and id_acteur='.$donnees['id_acteur'].' and id_user='.$_SESSION['id']);
+$dislike = $select->rowCount();
+?>
+   <section class="section1">
+        <div>
+            <img id="img2" src="assets/images/<?php echo $donnees['logo']?>" alt="logo de l´entreprise formation_co">
+            <label><?php echo $donnees['acteur']?></label>
+        </div>
+
+        <p><?php echo $donnees['description']?></p>
+    	<p><button><a href="acteur.php?id_acteur=<?php echo $donnees['id_acteur']?>">Lire la suite </a></button></p>
+        <div class="vote">
+           <img  src="assets/images/like.png" alt="logo de like">
+           <label><?php echo $like; ?></label>
+           <img src="assets/images/dislike.png" alt="logo de dislike">
+           <label><?php echo $dislike; ?></label>
+        </div>
+   </section>
+<?php
+}
+
+$reponse->closeCursor();
+
+?>
+
+</article>
+
+</main><hr>
 
 
     <footer id="footer1">

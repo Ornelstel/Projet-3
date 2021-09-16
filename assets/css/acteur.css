@@ -1,6 +1,10 @@
+#conteneur
+{
+    display: flex;
+    justify-content: space-around;
+}
 #img1{
     text-align: center;
-    
 }
 
 #section1{
@@ -13,5 +17,10 @@
     border: 2px solid red;
     margin: 15px;
     border-radius: 5px;
+    height: 150px;
+}
+
+p{
+  margin-left: 12px;
 }
 
