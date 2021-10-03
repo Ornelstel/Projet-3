@@ -1,0 +1,68 @@
+body{
+    margin:0px;
+    width: 100%;
+    background-color: #eefbff;
+}
+
+
+#img2, #img3, #img4, #img5{
+    width: 150px;
+    height: 80px; 
+}
+
+section, article{
+    border: 1px solid;
+    margin: 1em;
+    padding: 1.2em;
+    width: auto; 
+    margin-left:20px;
+}
+
+
+main{
+    position: relative;
+    margin-top: 10px;
+    margin-left: auto;
+    width: auto;
+ }
+
+ .section1{
+    border-radius: 5px;
+    border: 2px solid red;
+}
+
+span{
+    font-weight: bold;
+    color: rgb(20, 20, 20);
+    text-decoration: underline;
+}
+
+#footer1{
+    border: 1px solid;
+    margin: 1em;
+    padding: 1.2em;
+    width: auto; 
+    margin-left:20px;
+    text-align: center;
+}
+
+ul{
+    list-style-type: none;
+    overflow: hidden;   
+}
+
+li{
+    float: left;
+    padding: 5px;
+}
+
+.navigation{
+    float: right;
+}
+
+.button{
+    height: 40px;
+    width: 80px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
